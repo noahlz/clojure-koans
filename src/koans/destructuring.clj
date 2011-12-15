@@ -33,18 +33,23 @@
   "You can regain the full argument if you like arguing"
   (= {:original-parts ["Steven" "Hawking"] :named-parts {:first "Steven" :last "Hawking"}}
      (let [[first-name last-name :as full-name] ["Steven" "Hawking"]]
-       __))
+       {:original-parts full-name :named-parts {:first first-name :last last-name}}))
 
   "Break up maps by key"
   (= "123 Test Lane, Testerville, TX"
      (let [{street-address :street-address, city :city, state :state} test-address]
-       __))
-
+       (format "%s, %s, %s" street-address city state )))
+     
   "Or more succinctly"
   (= "123 Test Lane, Testerville, TX"
-     (let [{:keys [street-address __ __]} test-address]
-       __))
+     (let [{:keys [street-address city state]} test-address]
+       (format "%s, %s, %s" street-address city state)))
 
   "All together now!"
   (= "Test Testerson, 123 Test Lane, Testerville, TX"
-     (___ ["Test" "Testerson"] test-address)))
+     ((fn [[first-name last-name]
+	   {:keys [street-address city state]}]
+	     (str first-name " " last-name ", " street-address ", " city ", " state))
+        ["Test" "Testerson"] test-address)))
+     ;; This also works, but isn't the point:
+     ;;(apply format "%s %s, %s, %s, %s" (into ["Test" "Testerson"] (vals test-address)))))
